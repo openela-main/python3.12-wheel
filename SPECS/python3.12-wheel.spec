@@ -20,7 +20,7 @@
 
 Name:           python%{python3_pkgversion}-%{pypi_name}
 Version:        0.41.2
-Release:        3%{?dist}
+Release:        3%{?dist}.1
 Summary:        Built-package format for Python
 
 # packaging is ASL 2.0 or BSD
@@ -30,6 +30,9 @@ Source0:        %{url}/archive/%{version}/%{pypi_name}-%{version}.tar.gz
 # This is used in bootstrap mode where we manually install the wheel and
 # entrypoints
 Source1:        wheel-entrypoint
+# Security fix for CVE-2026-24049: Privilege Escalation or Arbitrary Code Execution via malicious wheel file unpacking
+# https://github.com/pypa/wheel/commit/7a7d2d (from 0.46.2+)
+Patch1:         CVE-2026-24049.patch
 BuildArch:      noarch
 
 BuildRequires:  python%{python3_pkgversion}-devel
@@ -142,6 +145,10 @@ install -p dist/%{python_wheel_name} -t %{buildroot}%{python_wheel_dir}
 %{python_wheel_dir}/%{python_wheel_name}
 
 %changelog
+* Mon Jan 26 2026 Miro Hrončok <mhroncok@redhat.com> - 0.41.2-3.1
+- Security fix for CVE-2026-24049
+  Resolves: RHEL-143652
+
 * Tue Jan 23 2024 Miro Hrončok <mhroncok@redhat.com> - 0.41.2-3
 - Rebuilt for timestamp .pyc invalidation mode
 
